@@ -1,5 +1,6 @@
 #wan_ip.rb
 require 'net/http'
+require 'ipaddr'
 Facter.add(:wan_ip) do
   url = URI.parse('http://ipecho.net/plain')
   req = Net::HTTP::Get.new(url.path)
@@ -7,6 +8,8 @@ Facter.add(:wan_ip) do
     http.request(req)
   }
   setcode do
-    res.body
+    if !(IPAddr.new(res.body) rescue nil).nil? == true
+      res.body
+    end
   end
 end
